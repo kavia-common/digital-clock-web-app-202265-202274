@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/digital-clock-web-app-202265-202274/digital_clock_frontend"
+}
