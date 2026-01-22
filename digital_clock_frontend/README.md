@@ -1,30 +1,31 @@
 # digital_clock_frontend
 
-This container currently contains only a `.env` file and **does not include a React application scaffold** (no `package.json`, no `src/`, no `public/`, etc.).
+React 17 (Create React App) frontend for a simple digital clock web app that displays the current time and updates every second.
 
-## Impact
+## Environment
 
-Static analysis (lint/typecheck/build checks) cannot be executed because there are no npm scripts or source files to analyze.
+This container preserves the existing `.env` file (already present). Variables are prefixed with `REACT_APP_...` and are compatible with Create React App.
 
-## What is missing (minimum)
-
-To enable static analysis, this folder must include at least:
-
-- `package.json` (with scripts like `build`, `lint` and/or `test`)
-- React source code under `src/`
-- A build setup (e.g., Create React App, Vite, or another React toolchain)
-
-## Once scaffolded, recommended checks
+## Local development
 
 From this directory:
 
 ```bash
 npm ci
+npm start
+```
+
+## Static analysis / CI checks
+
+```bash
+npm ci
 npm run build
-npm run lint   # if configured
-npm test -- --watchAll=false   # if configured
+npm run lint
+npm test
 ```
 
 ## Notes
 
-The existing `.env` contains React-style variables prefixed with `REACT_APP_...` and can be preserved for the future scaffold.
+- The UI is intentionally minimal: centered card, large time display, light theme.
+- No backend integration is implemented here (clock uses browser time).
+"
