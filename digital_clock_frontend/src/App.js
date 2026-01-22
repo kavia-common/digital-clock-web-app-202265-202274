@@ -24,16 +24,42 @@ function formatDate(date) {
   });
 }
 
+/**
+ * Align a ticking callback to the next exact second boundary, then run every second.
+ * This reduces visible drift compared to a plain setInterval(1000).
+ */
+function startSecondAlignedTicker(onTick) {
+  const now = Date.now();
+  const msUntilNextSecond = 1000 - (now % 1000);
+
+  const timeoutId = window.setTimeout(() => {
+    onTick();
+    const intervalId = window.setInterval(onTick, 1000);
+
+    // Return a cleanup function that clears the interval.
+    // (We can't return it directly to the caller from inside setTimeout,
+    // so the outer function returns a cleanup that clears both.)
+    startSecondAlignedTicker._intervalId = intervalId;
+  }, msUntilNextSecond);
+
+  return () => {
+    window.clearTimeout(timeoutId);
+    if (startSecondAlignedTicker._intervalId) {
+      window.clearInterval(startSecondAlignedTicker._intervalId);
+      startSecondAlignedTicker._intervalId = null;
+    }
+  };
+}
+
 // PUBLIC_INTERFACE
 function App() {
   /** This is the main application component that renders a centered digital clock. */
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    // Update every second. Aligning exact second boundaries isn't necessary for this app;
-    // this keeps the implementation simple and reliable.
-    const id = window.setInterval(() => setNow(new Date()), 1000);
-    return () => window.clearInterval(id);
+    // Keep the clock accurately updating on second boundaries.
+    const stop = startSecondAlignedTicker(() => setNow(new Date()));
+    return stop;
   }, []);
 
   const timeText = useMemo(() => formatTime(now), [now]);
